@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -40,6 +41,8 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	EditNewSearchWindow newfilewindow;
 	EditNewSearchWindow editwindow;
 	EditNewSearchWindow searchwindow;
+	/*JCheckbox*/
+	JCheckBox searchinside;
 	/*Table*/
 	private MyModel TabModel; 
 	private JTable FileList; 
@@ -64,7 +67,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	{
 		/*Konfiguracja podstawowa*/
 		setTitle("Œpiewnik Jerozolimski");
-		setSize(800,600);
+		setSize(800,650);
 		setLocation(300,200);
 		setResizable(false);
 		addWindowListener(this);
@@ -165,7 +168,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		mtSearch.addActionListener(this);
 		mTools.add(mtSettings);
 		mTools.add(mtFullScreen);
-		mTools.add(mtSearch);
+		//mTools.add(mtSearch); nie potrzebne w nowej wersji
 		mTools.add(mtBlackScreen);
 		/*Info Menu*/
 		miAboutProgram=new JMenuItem("O programie");
@@ -198,11 +201,17 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		configureViewBox();
 		/*Scrollpane*/
 		JScrollPane spFileList = new JScrollPane(FileList);
-		spFileList.setBounds(20,50,150,460);
+		spFileList.setBounds(20,90,150,470);
 		add(spFileList);
 		JScrollPane spView = new JScrollPane(taView);
-		spView.setBounds(180, 10,600, 500);
+		spView.setBounds(180, 10,600, 550);
 		add(spView);
+		/*Checkbox*/
+		searchinside = new JCheckBox();
+		searchinside.setText("Pe³ne przeszukiwanie");
+		searchinside.setBounds(20,50,150,30);
+		searchinside.addActionListener(this);
+		add(searchinside);
 	}
 	/*Wykonywane wiêcej razy*/
 	private void UserWantExit()
@@ -232,7 +241,12 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 					if(ListOfFiles[i].isFile()&&ListOfFiles[i].getName().indexOf(".txt")!=-1)
 					{
 						if(ListOfFiles[i].getName().toLowerCase().indexOf(searched)!=-1)
-							TabModel.addRow(new Object[] {ListOfFiles[i].getName()});
+							TabModel.addRow(new Object[] {ListOfFiles[i].getName()});						
+						else if(searchinside.isSelected())
+						{
+							if(IsInFile(ListOfFiles[i],searched))
+								TabModel.addRow(new Object[] {ListOfFiles[i].getName()});
+						}
 					}
 				}
 			}
@@ -445,6 +459,29 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		taView.setFont(new Font(fontname,style,fsize));
 		configureViewBox();
 	}
+	private boolean IsInFile(File file,String s)
+	{
+		String AllText="";
+		if(file.exists())
+		{
+			try {
+				Scanner fileReader = new Scanner(file);
+				while(fileReader.hasNext())
+				{
+					AllText+=fileReader.nextLine().toLowerCase() + " ";
+					if(AllText.indexOf(s)!=-1)
+					{
+						fileReader.close();
+						return true;
+					}
+				}
+				fileReader.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
 	/*Action Listenery*/
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -488,6 +525,8 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 			IncrementFontSize(false);
 		else if(src==pvSetFontSize)
 			setNewFontSize();
+		else if(src==searchinside)
+			UserSearch();
 	}
 	/*KeyListener*/
 	@Override
