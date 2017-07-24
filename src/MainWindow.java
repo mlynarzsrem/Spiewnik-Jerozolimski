@@ -57,7 +57,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	private JPopupMenu filelistpopupmenu,viewpopupmenu;
 	private JMenuItem pmNewFile,pmEditFile,pmOpenFile,pvIncFontSize,pvDecFontSize,pvSetFontSize;
 	/*Othes*/
-	private String AboutProgram="To jest œpiewnik Wspólnoty Jerozolima.\n Aplikacja zosta³a stworzona przez Jakuba M³ynarza.\n Wszelkie prawa zastrze¿one \n Wersja 1.0.0 ";
+	private String AboutProgram="To jest œpiewnik Wspólnoty Jerozolima.\n Aplikacja zosta³a stworzona przez Jakuba M³ynarza.\n Wszelkie prawa zastrze¿one \n Wersja 1.0.1 ";
 	/*Setings*/
 	private Settings ViewBoxSettings,fsSettings; 
 	private GlobalSettings globalSettings;
@@ -211,6 +211,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		searchinside.setText("Pe³ne przeszukiwanie");
 		searchinside.setBounds(20,50,150,30);
 		searchinside.addActionListener(this);
+		searchinside.setToolTipText("Zaznaczanie tej opcji powoduje branie pod uwagê podczas wyszukiwania równie¿ zawartoœci plików. ");
 		add(searchinside);
 	}
 	/*Wykonywane wiêcej razy*/
@@ -556,7 +557,6 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 			}
 			else if(e.getButton()==MouseEvent.BUTTON3)
 				openPopupMaybe(e);
-
 		}
 
 	}

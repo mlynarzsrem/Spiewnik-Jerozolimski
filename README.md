@@ -1,5 +1,5 @@
 # Spiewnik-Jerozolimski
-Wersja 1.0.0
+Wersja 1.0.1
 Aplikacja służy do dodawania, edytowania i wyświetlania tekstów pieśni.
 Obsługiwany format:
 Program obsługuje tylko i wyłącznie pliki w formacie "txt".
@@ -17,7 +17,7 @@ Instrukjca obsługi:
 3. Rozmiar kolor, oraz rodzaj czcionki podglądu oraz trybu pełnoekranowego, a także ścieżkę do folderu z pieśniami można ustawić kilkając w menu "Narzędzia", a następnie "Ustawienia".
 4. Rozmiar czcionki w podglądzie oraz w trybie pełnoekranowym można zmienić poprzez kliknięcie prawym przyciskiem myszy na podgląd oraz wybranie odpowiedniej opcji.
 -W trybie pełnoekranowym żeby zmienić rozmiar czcionki można również skorzystać z skrótów: "Q" oraz Scroll-up zwiększenie czcionki, "W"  oraz Scroll-down zmniejszenie czcionki.
-5. W momencie gdy nie jest znany nazwa lub numer piosenki można skorzystać z opcji szukania zaawansowanego. Żeby to zrobić należy w menu wybrać "Narzędzia" a następnie "Szukanie zaawansowane". Ta opcja przeszukuje 
+5. W momencie gdy nie jest znany nazwa lub numer piosenki można skorzystać z opcji szukania zaawansowanego. Żeby to zrobić należy zaznaczyć opcje "Pełne przeszukiwanie" znajdująca się pod polem wyszukiwania. Ta opcja przeszukuje 
 wszystkie pliki w folderze lilnia po linii w celu znalezienia konkretnej frazy. Dlatego nie zaleca się stosowania tej opcji dla dużej ilości długich plików. 
  
 W przypadku nieprawidłowego działania programu proszę o kontakt e-mail: mlynarzsrem@gmail.com 
