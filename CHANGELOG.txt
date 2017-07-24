@@ -1,0 +1,4 @@
+wersja 1.0.1:
+-Usuniêcie opcji wyszukiwania zaawansowanego z menu "Narzêdzia".
+-Dodanie opcji pe³nego wyszukiwania do standardowego wyszukiwania, 
+po zaznaczeniu CheckBoxa "Pe³ne wyszukiwanie".  
