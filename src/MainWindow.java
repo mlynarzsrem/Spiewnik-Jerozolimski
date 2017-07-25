@@ -40,6 +40,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	FullScreenView fullscreenview;
 	EditNewSearchWindow newfilewindow;
 	EditNewSearchWindow editwindow;
+	HelpWindow helpwindow;
 	/*JCheckbox*/
 	JCheckBox searchinside;
 	/*Table*/
@@ -312,6 +313,15 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		taView.setFont(ViewBoxSettings.getPlainFont());
 	}
 	/*Otwieranie okien Dialogowych*/
+	private void openHelpWindow()
+	{
+		if(helpwindow==null)
+		{
+			helpwindow = new HelpWindow(this);	
+		}
+		else
+			helpwindow.setVisible(true);
+	}
 	private void openBlackScreenWindow()
 	{
 		if(blackscreen==null)
@@ -497,7 +507,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		else if(src==miAboutProgram)
 			JOptionPane.showMessageDialog(null, AboutProgram, "O programie", JOptionPane.INFORMATION_MESSAGE);
 		else if(src==miHelp)
-			openFullScreenView(new File("help.txt"));
+			openHelpWindow();
 		/*Tools Menu*/
 		else if(src==mtFullScreen)
 			openFullScreenView(getSelectedFile());

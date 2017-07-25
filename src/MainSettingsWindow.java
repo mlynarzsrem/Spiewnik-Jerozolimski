@@ -115,14 +115,22 @@ public class MainSettingsWindow extends JDialog implements ActionListener,Window
 	{
 		cbFSSFont = new JComboBox<>();
 		cbFSSFont.setBounds(160,200,200,20);
-		cbFSSFont.addItem("SansSerif");
+		cbFSSFont.addItem("Arial");
+		cbFSSFont.addItem("Calibri");
 		cbFSSFont.addItem("Helvetica");
+		cbFSSFont.addItem("SansSerif");
+		cbFSSFont.addItem("Tahoma");
+		cbFSSFont.addItem("Times New Roman");
 		add(cbFSSFont);
 		
 		cbVBSFont= new JComboBox<>();
 		cbVBSFont.setBounds(160,340,200,20);
-		cbVBSFont.addItem("SansSerif");
+		cbVBSFont.addItem("Arial");
+		cbVBSFont.addItem("Calibri");
 		cbVBSFont.addItem("Helvetica");
+		cbVBSFont.addItem("SansSerif");
+		cbVBSFont.addItem("Tahoma");
+		cbVBSFont.addItem("Times New Roman");
 		add(cbVBSFont);
 	}
 	private void configureButtons()
