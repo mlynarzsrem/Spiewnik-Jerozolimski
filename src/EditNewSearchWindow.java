@@ -15,6 +15,7 @@ import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -23,6 +24,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /*Uniwersalna klasa umo¿liwiaj¹ca dodawanie i edytowanie pieœni oraz zaawansowane wyszukiwanie  */
 public class EditNewSearchWindow extends JDialog implements ActionListener,WindowListener{
@@ -31,43 +33,31 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 	/*Elementy GUI*/
 	private JTextField textfield; //Mo¿e zawieraæ nazwe pliku lub wyszukiwana frazê
 	private JTextArea textarea; //Mo¿e zawieraæ tekst piosenki lub listê plików
-	private JButton bOK,bCancel;//bOk mo¿e s³u¿yc zarówno jako przycisk szukania jak i zapisu
+	private JButton bOK,bCancel,bSetname;//bOk mo¿e s³u¿yc zarówno jako przycisk szukania jak i zapisu
 	private JPopupMenu popupmenu;
 	private JMenuItem mCopy,mPaste,mCut;
 	/*Pola pomocnicze*/
 	private File file;
 	private String Path;
-	private GlobalSettings Settings;
 	/*Konstruktory*/
 	/*Konstruktor do edycji*/
 	public EditNewSearchWindow(JFrame owner, File pfile) 
 	{
 		super(owner,"Edytuj tekst",true);
 		setLocation(300,200);
-		option=1;
-		file=pfile;
 		addWindowListener(this);
-		configureEditView();
-	}
-	/*Konstruktor do dodawnaie nowych*/
-	public EditNewSearchWindow(JFrame owner, String path) 
-	{
-		super(owner,"Nowy tekst",true);
-		setLocation(300,200);
-		addWindowListener(this);
-		Path=path;
-		option=2;
-		configureNewView();
-	}
-	/*Konstruktor do wyszukiwania*/
-	public EditNewSearchWindow(JFrame owner,GlobalSettings gs) 
-	{
-		super(owner,"Szukanie zaawansowane",true);
-		setLocation(300,200);
-		addWindowListener(this);
-		Settings=gs;
-		option=3;
-		configureSearchingView();
+		if(pfile.isFile())
+		{
+			option=1;
+			file=pfile;
+			configureEditView();
+		}
+		else if(pfile.isDirectory())
+		{
+			Path=pfile.getAbsolutePath();
+			option=2;
+			configureNewView();
+		}
 	}
 	/*Metody universalne*/
 	private void configurePopupMenu()
@@ -86,21 +76,25 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 		
 		textarea.setComponentPopupMenu(popupmenu);
 	}
-	private void configureTextfields()//nie dzia³a do wyszukiwania
+	private void configureTextfields()
 	{
-		JLabel filename= new JLabel("Nazwa pliku:",JLabel.CENTER);
-		filename.setBounds(50,20,200,30);
+		JLabel filename= new JLabel("Œcie¿ka do pliku:",JLabel.CENTER);
+		filename.setBounds(50,10,200,20);
 		add(filename);
 		textfield = new JTextField();
-		textfield.setBounds(50,50,200,30);
-		add(textfield);
+		//textfield.setBounds(50,50,200,30);
+		textfield.setEditable(false);
+		JScrollPane tfsp = new JScrollPane(textfield);
+		tfsp.setBounds(50,30,200,40);
+		///add(textfield);
+		add(tfsp);
 		
 		textarea = new JTextArea();
 		JScrollPane sp = new JScrollPane(textarea);
 		sp.setBounds(50,90,500,600);
 		add(sp);
 	}
-	private void configureButtons()//komentarz jak wy¿ej
+	private void configureButtons()
 	{
 		bOK = new JButton("Zapisz");
 		bOK.setBounds(50,700,150,40);
@@ -111,6 +105,13 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 		bCancel.setBounds(220,700,150,40);
 		bCancel.addActionListener(this);
 		add(bCancel);
+		if(option==2) 
+		{
+			bSetname =new JButton("Wybierz nazwê pliku");
+			bSetname.addActionListener(this); 
+			bSetname.setBounds(260,30,150,40);
+			add(bSetname);
+		} 
 	}
 	/*Metody do edycji*/
 	private void configureEditView()
@@ -119,8 +120,7 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 		setResizable(false);
 		setLayout(null);
 		configureTextfields();
-		textfield.setEditable(false);
-		textfield.setText(file.getName());
+		textfield.setText(file.getAbsolutePath());
 		configurePopupMenu();
 		configureButtons();
 		ImportText();
@@ -205,9 +205,6 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 	{
 		if(textfield.getText().isEmpty()==false)
 		{
-			String format=".txt";
-			String newPath= this.Path+"\\"+ textfield.getText() +format;
-			file = new File(newPath);
 			if(file.exists())
 			{
 				int odp=JOptionPane.showConfirmDialog(this, "Plik ju¿ istnieje! \n Czy chcesz go nadpisaæ?", "Plik istnieje",JOptionPane.YES_NO_OPTION);
@@ -239,95 +236,31 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 		}
 		setVisible(false);
 	}
-	public void NextNewText(String path)
+	public void NextNewText(File folder)
 	{
-		Path=path;
+		Path=folder.getAbsolutePath();
 		textfield.setText("");
 		textarea.setText("");
 		setVisible(true);
 	}
-	/*metody do wyszukiwania zaawansowanego*/
-	private void configureSearchingView()
-	{
-		setSize(250,450);
-		setResizable(false);
-		setLayout(null);
-		configureSearchingTextfields();
-		configureSearchingButtons();
-		setVisible(true);
-		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-	}
-	private void configureSearchingTextfields()
-	{
-		textfield = new JTextField();
-		textfield.setBounds(50,10,150,30);
-		textfield.setToolTipText("Tu wpisz wyszukiwan¹ frazê.");
-		add(textfield);
-		
-		textarea = new JTextArea();
-		textarea.setEditable(false);
-		JScrollPane sp = new JScrollPane(textarea);
-		sp.setBounds(50,50,150,300);
-		add(sp);
-	}
-	private void configureSearchingButtons()
-	{
-		bOK = new JButton("Szukaj");
-		bOK.setBounds(10,360,100,40);
-		bOK.addActionListener(this);
-		add(bOK);
-		
-		bCancel= new JButton("Anuluj");
-		bCancel.setBounds(130,360,100,40);
-		bCancel.addActionListener(this);
-		add(bCancel);
-	}
-	private void Search()
-	{
-		String msg="To opcja przeszukuje wszystkie pliki w folderze linia po lini.\n"
-				+ "Przy folderach z du¿¹ liczb¹ d³ugich plików tekstowych mo¿e trwaæ to bardzo d³ugo.\n"
-				+"Operacja nie mo¿e zostaæ przerwana przed zakoñczeniem wyszukiwania!\n"
-				+"Czy nadal chcesz kontynuowaæ?";
-		if(JOptionPane.showConfirmDialog(this, msg, "Ostrze¿enie", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
-		{
-			textarea.setText("");
-			if(textfield.getText().isEmpty()==false)
-			{
-				String searched=textfield.getText();
-				File folder= new File(Settings.getPath());
-				File listoffiles[] =folder.listFiles();
-				for(int i=0;i<listoffiles.length;i++)
-				{
-					if(IsInFile(listoffiles[i],searched.toLowerCase()))
-						textarea.append(listoffiles[i].getName()+'\n');
-				}
-			}
-		}
-	}
-	private boolean IsInFile(File file,String s)
-	{
-		String AllText="";
-		if(file.exists())
-		{
-			try {
-				Scanner fileReader = new Scanner(file);
-				while(fileReader.hasNext())
-				{
-					AllText+=fileReader.nextLine().toLowerCase() + " ";
-					if(AllText.indexOf(s)!=-1)
-					{
-						fileReader.close();
-						return true;
-					}
-				}
-				fileReader.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
 	/*System clipboard*/
+	private void setFileName()
+	{
+		JFileChooser fc= new JFileChooser();
+		fc.setCurrentDirectory(new File(Path));
+		fc.setDialogTitle("Wybierz nazwê pliku");
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setFileFilter(new FileNameExtensionFilter("TEXT FILES", "txt", "text"));
+		if(fc.showSaveDialog(this)==JFileChooser.APPROVE_OPTION)
+		{
+			if(!fc.getSelectedFile().getAbsolutePath().endsWith(".txt")){
+				file = new File(fc.getSelectedFile() + ".txt");
+			}
+			else 
+			file=fc.getSelectedFile();
+			textfield.setText(file.getAbsolutePath());
+		}
+	}
 	private void insertStringToClipboard(String s)
 	{
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -364,9 +297,6 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 				case 2:
 					AddNewText();
 				break;
-				case 3:
-					Search();
-				break;
 			}
 		}
 		else if(z==bCancel)
@@ -384,6 +314,8 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 			insertStringToClipboard(textarea.getSelectedText());
 			textarea.replaceSelection("");
 		}
+		else if(z==bSetname)
+			setFileName();
 	}
 	/*Windows listenree*/
 	@Override

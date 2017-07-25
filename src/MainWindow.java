@@ -40,7 +40,6 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	FullScreenView fullscreenview;
 	EditNewSearchWindow newfilewindow;
 	EditNewSearchWindow editwindow;
-	EditNewSearchWindow searchwindow;
 	/*JCheckbox*/
 	JCheckBox searchinside;
 	/*Table*/
@@ -52,7 +51,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	/*Menu*/
 	private JMenuBar menubar;
 	private JMenu mFile,mTools,mInfo;
-	private JMenuItem mfOpenFile,mfNewFile,mfEdit,mfExit,mtSettings,mtSearch,mtBlackScreen,mtFullScreen,miAboutProgram,miHelp;
+	private JMenuItem mfOpenFile,mfNewFile,mfEdit,mfExit,mtSettings,mtBlackScreen,mtFullScreen,miAboutProgram,miHelp;
 	/*JPopupMemu*/
 	private JPopupMenu filelistpopupmenu,viewpopupmenu;
 	private JMenuItem pmNewFile,pmEditFile,pmOpenFile,pvIncFontSize,pvDecFontSize,pvSetFontSize;
@@ -72,13 +71,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		setResizable(false);
 		addWindowListener(this);
 		/*Konfiguracja ustawiên*/
-		ViewBoxSettings = new Settings();
-		fsSettings = new Settings();
-		globalSettings = new GlobalSettings();
-		ImportSettings();
-		File folder= new File(globalSettings.getPath());
-		if(!folder.exists()) //w przypadku nie poprawnych ustawien
-			globalSettings.setDefault();
+		configureSettings();
 		/*Konfiguracja wygl¹du*/
 		setLayout(null);
 		configureMenus(); //rozmieszczanie obiektów menu
@@ -92,6 +85,16 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		MainWindow mainwindow= new MainWindow();
 		mainwindow.setVisible(true);
 		
+	}
+	private void configureSettings()
+	{
+		ViewBoxSettings = new Settings();
+		fsSettings = new Settings();
+		globalSettings = new GlobalSettings();
+		ImportSettings();
+		File folder= new File(globalSettings.getPath());
+		if(!folder.exists()) //w przypadku nie poprawnych ustawien
+			globalSettings.setDefault();
 	}
 	private void confgureViewPopupMenu()
 	{
@@ -164,11 +167,8 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		mtFullScreen=new JMenuItem("Pe³ny ekran");
 		mtFullScreen.addActionListener(this);
 		mtFullScreen.setAccelerator(KeyStroke.getKeyStroke("ctrl W"));
-		mtSearch=new JMenuItem("Szuaknie zaawansowane");
-		mtSearch.addActionListener(this);
 		mTools.add(mtSettings);
 		mTools.add(mtFullScreen);
-		//mTools.add(mtSearch); nie potrzebne w nowej wersji
 		mTools.add(mtBlackScreen);
 		/*Info Menu*/
 		miAboutProgram=new JMenuItem("O programie");
@@ -312,13 +312,6 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		taView.setFont(ViewBoxSettings.getPlainFont());
 	}
 	/*Otwieranie okien Dialogowych*/
-	private void openAdvancedSearching()
-	{
-		if(searchwindow==null)
-			searchwindow = new EditNewSearchWindow(this,globalSettings);
-		else searchwindow.setVisible(true);
-		
-	}
 	private void openBlackScreenWindow()
 	{
 		if(blackscreen==null)
@@ -340,10 +333,10 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	private void openNewFileWindow()
 	{
 		if(newfilewindow==null)
-		newfilewindow= new EditNewSearchWindow(this,globalSettings.getPath());
+		newfilewindow= new EditNewSearchWindow(this,new File(globalSettings.getPath()));
 		else
 		{
-			newfilewindow.NextNewText(globalSettings.getPath());
+			newfilewindow.NextNewText(new File(globalSettings.getPath()));
 		}
 		UserSearch();
 	}
@@ -367,6 +360,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		UserSearch();
 	}
 	/*Pomocnicze*/
+	/*Operacje na ustawieniach*/
 	private void saveSettings()
 	{
 		try {
@@ -376,6 +370,23 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 			e.printStackTrace();
 		}
 	}
+	private void ImportSettings()
+	{
+		File file = new File("settings.dat");
+		if(file.exists())
+		{
+			try {
+				SettingsManager.ReadFromFile(globalSettings, fsSettings, ViewBoxSettings);
+			} catch (ClassNotFoundException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			saveSettings();
+		}
+	}
+	/*Wybór plików*/
 	private File getSelectedFile()
 	{
 		File newFile;
@@ -407,22 +418,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		}
 		return new File("");
 	}
-	private void ImportSettings()
-	{
-		File file = new File("settings.dat");
-		if(file.exists())
-		{
-			try {
-				SettingsManager.ReadFromFile(globalSettings, fsSettings, ViewBoxSettings);
-			} catch (ClassNotFoundException | IOException e) {
-				e.printStackTrace();
-			}
-		}
-		else
-		{
-			saveSettings();
-		}
-	}
+	/*Czcionka w podgl¹dzie*/
 	private void setNewFontSize()
 	{
 		Font actFont=taView.getFont();
@@ -460,6 +456,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		taView.setFont(new Font(fontname,style,fsize));
 		configureViewBox();
 	}
+	/*Wyszukiwanie*/
 	private boolean IsInFile(File file,String s)
 	{
 		String AllText="";
@@ -500,32 +497,33 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		else if(src==miAboutProgram)
 			JOptionPane.showMessageDialog(null, AboutProgram, "O programie", JOptionPane.INFORMATION_MESSAGE);
 		else if(src==miHelp)
-			JOptionPane.showMessageDialog(null, "Ta opcja jest niedostêpna w tej wersji programu!", "Pomoc", JOptionPane.INFORMATION_MESSAGE);
+			openFullScreenView(new File("help.txt"));
 		/*Tools Menu*/
 		else if(src==mtFullScreen)
 			openFullScreenView(getSelectedFile());
 		else if(src==mtBlackScreen)
 			openBlackScreenWindow();
-		else if(src==mtSearch)
-			openAdvancedSearching();
 		else if(src==mtSettings)
 			openSettingsWindow();
 		/*Textfields*/
 		else if(src==tfSearch)
 			UserSearch();
 		/*Popupmenu*/
+		/*filelist popmenu*/
 		else if(src==pmNewFile)
 			openNewFileWindow();
 		else if(src==pmOpenFile)
 			openFullScreenView(getSelectedFile());
 		else if(src==pmEditFile)
 			openEditingWindow(getSelectedFile());
+		/*view box popmenu*/
 		else if(src==pvIncFontSize)
 			IncrementFontSize(true);
 		else if(src==pvDecFontSize)
 			IncrementFontSize(false);
 		else if(src==pvSetFontSize)
 			setNewFontSize();
+		/*checkbox*/
 		else if(src==searchinside)
 			UserSearch();
 	}

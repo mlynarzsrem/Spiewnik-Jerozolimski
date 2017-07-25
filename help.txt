@@ -1,0 +1,40 @@
+# Spiewnik-Jerozolimski
+
+Wersja 1.0.1
+
+Aplikacja s³u¿y do dodawania, edytowania i wyœwietlania tekstów pieœni.
+
+Obs³ugiwany format:
+
+Program obs³uguje tylko i wy³¹cznie pliki w formacie "txt".
+
+Funkcje aplikacji:
+-Tworzenie nowych plików tekstowych (skrót klawiszowy ctrl + n) 
+
+-Edycja istniej¹cych plików tekstowych (skrót klawiszowy ctrl + e) 
+
+-Wyœwietlanie plików na pe³nym ekranie (skrót klawiszowy ctrl + w) 
+
+-Wyœwietlanie czarnego okna na ekranie (skrót klawiszowy ctrl + b) 
+
+-Wyszukiwanie zaawansowane, przeszukiwanie plików po ich zawartoœci 
+
+Instrukjca obs³ugi:
+1. ¯eby wybraæ interesuj¹ce nas pliki nale¿y wpisaæ ich nazwê w polu wyszukiwania znajduj¹cego siê w lewym górnym rogu. Poni¿ej tego pola powinna pojawiæ siê lista wybranych przez nas plików.
+
+-¯eby wyœwietliæ pieœñ w podgl¹dzie nale¿y klikn¹æ raz na jego nazwê.
+
+-¯eby wyœwietliæ tekst na pe³nym ekranie nale¿y klikn¹æ dwa razy na nazwê pliku lub po pojedynczym klikniêciu, w momencie gdy dany plik jest zaznaczony, skorzystaæ ze skrótu klawiszowgo ctrl + w.  
+
+2. W przypadku gdy plik jest zaznaczony (klikniêty raz) mo¿na klikaj¹c prawym przyciskiem myszy na jego nazwê otworzyæ menu umo¿liwaj¹ce zarówno wyœwietenie tego pliku na pe³nym ekranie jak równie¿ przejœcie w tryb edycji.
+
+3. Rozmiar kolor, oraz rodzaj czcionki podgl¹du oraz trybu pe³noekranowego, a tak¿e œcie¿kê do folderu z pieœniami mo¿na ustawiæ kilkaj¹c w menu "Narzêdzia", a nastêpnie "Ustawienia".
+
+4. Rozmiar czcionki w podgl¹dzie oraz w trybie pe³noekranowym mo¿na zmieniæ poprzez klikniêcie prawym przyciskiem myszy na podgl¹d oraz wybranie odpowiedniej opcji.
+
+-W trybie pe³noekranowym ¿eby zmieniæ rozmiar czcionki mo¿na równie¿ skorzystaæ z skrótów: "Q" oraz Scroll-up zwiêkszenie czcionki, "W"  oraz Scroll-down zmniejszenie czcionki.
+5. W momencie gdy nie jest znany nazwa lub numer piosenki mo¿na skorzystaæ z opcji szukania zaawansowanego. ¯eby to zrobiæ nale¿y zaznaczyæ opcje "Pe³ne przeszukiwanie" znajduj¹ca siê pod polem wyszukiwania. Ta opcja przeszukuje 
+wszystkie pliki w folderze lilnia po linii w celu znalezienia konkretnej frazy. Dlatego nie zaleca siê stosowania tej opcji dla du¿ej iloœci d³ugich plików. 
+ 
+
+W przypadku nieprawid³owego dzia³ania programu proszê o kontakt e-mail: mlynarzsrem@gmail.com 
