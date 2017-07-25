@@ -346,7 +346,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		newfilewindow= new EditNewSearchWindow(this,new File(globalSettings.getPath()));
 		else
 		{
-			newfilewindow.NextNewText(new File(globalSettings.getPath()));
+			newfilewindow.openAnother(new File(globalSettings.getPath()));
 		}
 		UserSearch();
 	}
@@ -357,7 +357,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 			if(editwindow==null)
 				editwindow= new EditNewSearchWindow (this,editFile);
 			else
-				editwindow.NextEdit(editFile);
+				editwindow.openAnother(editFile);
 			UserSearch();
 		}
 	}

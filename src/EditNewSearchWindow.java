@@ -50,14 +50,13 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 		{
 			option=1;
 			file=pfile;
-			configureEditView();
 		}
 		else if(pfile.isDirectory())
 		{
 			Path=pfile.getAbsolutePath();
 			option=2;
-			configureNewView();
 		}
+		configureView();
 	}
 	/*Metody universalne*/
 	private void configurePopupMenu()
@@ -113,20 +112,37 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 			add(bSetname);
 		} 
 	}
-	/*Metody do edycji*/
-	private void configureEditView()
+	public void openAnother(File pfile)
+	{
+		textfield.setText("");
+		textarea.setText("");
+		if(pfile.isFile())//edycja
+		{
+			file=pfile;
+			textfield.setText(file.getAbsolutePath());
+			ImportText();
+		}
+		else if(pfile.isDirectory())
+			Path=pfile.getAbsolutePath();
+		setVisible(true);
+	}
+	private void configureView()
 	{
 		setSize(600,800);
 		setResizable(false);
 		setLayout(null);
 		configureTextfields();
-		textfield.setText(file.getAbsolutePath());
 		configurePopupMenu();
 		configureButtons();
-		ImportText();
+		if(option==1)
+		{
+			textfield.setText(file.getAbsolutePath());
+			ImportText();
+		}			
 		setVisible(true);
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 	}
+	/*Metody do edycji*/
 	private void ImportText()
 	{	
 		textarea.setText("");
@@ -148,72 +164,20 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 			JOptionPane.showMessageDialog(this, "Ten plik nie istnieje!","Wyst¹pi³ b³¹d",JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	private void SaveChanges()
-	{
-		if(file.exists())
-		{
-			String filePath=file.getAbsolutePath();
-			if(file.delete()==true)
-			{
-				file = new File(filePath);
-				try {
-					PrintWriter filewriter = new PrintWriter(file);
-					String tavalue=textarea.getText();
-					Scanner taReader = new Scanner(tavalue);
-					while(taReader.hasNext())
-					{
-						filewriter.println(taReader.nextLine());
-					}
-					taReader.close();
-					filewriter.close();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
-			}
-			else
-			{
-				JOptionPane.showMessageDialog(this, "Nie mo¿na zapisaæ! \n Prawdopodobnie ten plik jest ju¿ otwarty w innym programie ","Wyst¹pi³ b³¹d",JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-		}
-		else
-		{
-			JOptionPane.showMessageDialog(this, "Ten plik nie istnieje!","Wyst¹pi³ b³¹d",JOptionPane.ERROR_MESSAGE);
-		}
-		setVisible(false);
-	}
-	public void NextEdit(File pfile)
-	{
-		file=pfile;
-		ImportText();
-		setVisible(true);
-	}
-	/*metody do tworzenia nowego teksty*/
-	private void configureNewView()
-	{
-		setSize(600,800);
-		setResizable(false);
-		setLayout(null);
-		configureTextfields();
-		textfield.setToolTipText("Tu wpisz nazwê pliku.");
-		configurePopupMenu();
-		configureButtons();
-		setVisible(true);
-		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-	}
-	private void AddNewText()
+	private void saveFile()
 	{
 		if(textfield.getText().isEmpty()==false)
 		{
 			if(file.exists())
 			{
-				int odp=JOptionPane.showConfirmDialog(this, "Plik ju¿ istnieje! \n Czy chcesz go nadpisaæ?", "Plik istnieje",JOptionPane.YES_NO_OPTION);
-				if(odp==JOptionPane.YES_OPTION)
-					SaveChanges();
-					return;
+				if(option==2)
+				{
+					int odp=JOptionPane.showConfirmDialog(this, "Plik ju¿ istnieje! \n Czy chcesz go nadpisaæ?", "Plik istnieje",JOptionPane.YES_NO_OPTION);
+					if(odp!=JOptionPane.YES_OPTION)
+						return;
+				}
+				file.delete();
 			}
-			else
-			{
 				try {
 					PrintWriter filewriter = new PrintWriter(file);
 					String tavalue=textarea.getText();
@@ -228,7 +192,6 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 					e.printStackTrace();
 				}
 				
-			}
 		}
 		else
 		{
@@ -236,14 +199,6 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 		}
 		setVisible(false);
 	}
-	public void NextNewText(File folder)
-	{
-		Path=folder.getAbsolutePath();
-		textfield.setText("");
-		textarea.setText("");
-		setVisible(true);
-	}
-	/*System clipboard*/
 	private void setFileName()
 	{
 		JFileChooser fc= new JFileChooser();
@@ -261,6 +216,7 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 			textfield.setText(file.getAbsolutePath());
 		}
 	}
+	/*System clipboard*/
 	private void insertStringToClipboard(String s)
 	{
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -292,10 +248,10 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 			switch(option)
 			{
 				case 1:
-					SaveChanges();
+					saveFile();
 				break;
 				case 2:
-					AddNewText();
+					saveFile();
 				break;
 			}
 		}
