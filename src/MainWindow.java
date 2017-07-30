@@ -31,7 +31,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
-public class MainWindow extends JFrame implements ActionListener , MouseListener,KeyListener,WindowListener
+public class MainWindow extends JFrame implements ActionListener , MouseListener,KeyListener,WindowListener 
 {
 	private static final long serialVersionUID = 4939884085632438880L;
 	/*JDialog*/
@@ -293,7 +293,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 				Scanner fileReader= new Scanner(file);
 				while(fileReader.hasNext())
 				{
-					taView.append(fileReader.nextLine()+"\n");
+					taView.append(fileReader.nextLine().trim()+"\n");
 				}
 				fileReader.close();
 				

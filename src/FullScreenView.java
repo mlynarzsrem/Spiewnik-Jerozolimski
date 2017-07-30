@@ -119,7 +119,7 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 				Scanner fileReader= new Scanner(file);
 				while(fileReader.hasNext())
 				{
-					textfield.append(fileReader.nextLine()+"\n");
+					textfield.append(fileReader.nextLine().trim()+"\n");
 				}
 				fileReader.close();
 				
