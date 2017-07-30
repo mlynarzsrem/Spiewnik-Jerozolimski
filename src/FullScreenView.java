@@ -19,12 +19,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
 public class FullScreenView extends JDialog implements KeyListener,MouseWheelListener ,ActionListener{
 	private static final long serialVersionUID = -5381313303663242848L;
 	private JTextArea textfield;
 	private JPopupMenu popupmenu;
-	private JMenuItem mIncFontSize,mDecFontSize,mSetFontSize;
+	private JMenuItem mIncFontSize,mDecFontSize,mSetFontSize,mBegining;
 	private String filename;
 	private Settings settings;
 	public FullScreenView(JFrame owner,String f,Settings fs)
@@ -34,20 +35,26 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 		addMouseWheelListener(this);
 		Dimension d =Toolkit.getDefaultToolkit().getScreenSize();
 		setSize(d.width,d.height);
-		
+		setResizable(false);
+		configureTextfield();
+		configurePopupMenu();
+		settings=fs;
+		filename=f;
+		ChangeText(filename);	
+	}
+	private void configureTextfield()
+	{
 		textfield = new JTextArea();
 		textfield.addKeyListener(this);
 		textfield.addMouseWheelListener(this);
 		textfield.setMargin(new Insets(5,20,0,20));
 		textfield.setEditable(false);
 		textfield.setLineWrap(true);
+		DefaultCaret caret = (DefaultCaret)textfield.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		JScrollPane sp = new JScrollPane(textfield);
 		sp.addKeyListener(this);
 		add(sp);
-		configurePopupMenu();
-		settings=fs;
-		filename=f;
-		ChangeText(filename);	
 	}
 	private void configurePopupMenu()
 	{
@@ -57,11 +64,15 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 		mDecFontSize.addActionListener(this);
 		mSetFontSize = new JMenuItem("Ustaw rozmiar czcionki");
 		mSetFontSize.addActionListener(this);
+		mBegining= new JMenuItem("Wróæ na pocz¹tek");
+		mBegining.addActionListener(this);
 		
 		popupmenu = new JPopupMenu();
 		popupmenu.add(mIncFontSize);
 		popupmenu.add(mDecFontSize);
 		popupmenu.add(mSetFontSize);
+		popupmenu.add(mBegining);
+		
 		textfield.setComponentPopupMenu(popupmenu);
 	}
 	private void IncrementFontSize(boolean up)
@@ -103,6 +114,8 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 	{
 		filename=f;	
 		importText();
+		Dimension d =Toolkit.getDefaultToolkit().getScreenSize();
+		setSize(d.width,d.height);
 		setVisible(true);
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);	
 	}
@@ -126,7 +139,9 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-		}	
+		}
+		textfield.setCaretPosition(0);
+		textfield.setRows(textfield.getLineCount()*3);
 	}
 	/*Listenrr*/
 	@Override
@@ -137,7 +152,10 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 			IncrementFontSize(true);
 		if(e.getKeyCode()==KeyEvent.VK_W)
 			IncrementFontSize(false);
-			
+		if(e.getKeyCode()==KeyEvent.VK_SPACE||e.getKeyCode()==KeyEvent.VK_SHIFT)
+			textfield.setCaretPosition(0);
+		if(e.getKeyCode()==KeyEvent.VK_ENTER)
+			System.out.println(textfield.getCaretPosition());
 		
 	}
 	@Override
@@ -171,7 +189,8 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 			IncrementFontSize(false);
 		else if(z==mSetFontSize)
 			setNewFontSize();
+		else if(z==mBegining)
+			textfield.setCaretPosition(0);
 	}
-
 
 }
