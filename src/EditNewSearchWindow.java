@@ -5,8 +5,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,26 +24,24 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-/*Uniwersalna klasa umo¿liwiaj¹ca dodawanie i edytowanie pieœni oraz zaawansowane wyszukiwanie  */
-public class EditNewSearchWindow extends JDialog implements ActionListener,WindowListener{
+public class EditNewSearchWindow extends JDialog implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private int option;
 	/*Elementy GUI*/
-	private JTextField textfield; //Mo¿e zawieraæ nazwe pliku lub wyszukiwana frazê
-	private JTextArea textarea; //Mo¿e zawieraæ tekst piosenki lub listê plików
-	private JButton bOK,bCancel,bSetname;//bOk mo¿e s³u¿yc zarówno jako przycisk szukania jak i zapisu
+	private JTextField textfield; 
+	private JTextArea textarea;
+	private JButton bOK,bCancel,bSetname;
+	/*popmenu*/
 	private JPopupMenu popupmenu;
 	private JMenuItem mCopy,mPaste,mCut;
 	/*Pola pomocnicze*/
 	private File file;
 	private String Path;
-	/*Konstruktory*/
-	/*Konstruktor do edycji*/
+	/*Wykonywane tylko raz*/
 	public EditNewSearchWindow(JFrame owner, File pfile) 
 	{
 		super(owner,"Edytuj tekst",true);
 		setLocation(300,200);
-		addWindowListener(this);
 		if(pfile.isFile())
 		{
 			option=1;
@@ -58,7 +54,7 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 		}
 		configureView();
 	}
-	/*Metody universalne*/
+	/*Konfiguracja widoku*/
 	private void configurePopupMenu()
 	{
 		mCopy = new JMenuItem("Kopiuj");
@@ -112,20 +108,6 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 			add(bSetname);
 		} 
 	}
-	public void openAnother(File pfile)
-	{
-		textfield.setText("");
-		textarea.setText("");
-		if(pfile.isFile())//edycja
-		{
-			file=pfile;
-			textfield.setText(file.getAbsolutePath());
-			ImportText();
-		}
-		else if(pfile.isDirectory())
-			Path=pfile.getAbsolutePath();
-		setVisible(true);
-	}
 	private void configureView()
 	{
 		setSize(600,800);
@@ -137,13 +119,27 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 		if(option==1)
 		{
 			textfield.setText(file.getAbsolutePath());
-			ImportText();
+			importText();
 		}			
 		setVisible(true);
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 	}
-	/*Metody do edycji*/
-	private void ImportText()
+	/*Wykonywane przy otwieraniu nowego okna*/
+	public void openAnother(File pfile)
+	{
+		textfield.setText("");
+		textarea.setText("");
+		if(pfile.isFile())//edycja
+		{
+			file=pfile;
+			textfield.setText(file.getAbsolutePath());
+			importText();
+		}
+		else if(pfile.isDirectory())
+			Path=pfile.getAbsolutePath();
+		setVisible(true);
+	}
+	private void importText()
 	{	
 		textarea.setText("");
 		if(file.exists())
@@ -164,6 +160,8 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 			JOptionPane.showMessageDialog(this, "Ten plik nie istnieje!","Wyst¹pi³ b³¹d",JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	/*Wykonywane wiêcej razy*/
+	/*Wykonywane po reakcji u¿ytkownika*/
 	private void saveFile()
 	{
 		if(textfield.getText().isEmpty()==false)
@@ -245,22 +243,11 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 		Object z =e.getSource();
 		if(z==bOK)
 		{
-			switch(option)
-			{
-				case 1:
+			if(option==1||option==2)
 					saveFile();
-				break;
-				case 2:
-					saveFile();
-				break;
-			}
 		}
 		else if(z==bCancel)
-		{
-			textarea.setText("");
-			textfield.setText("");
 			setVisible(false);
-		}
 		else if(z==mPaste)
 			insertFromClipboard();
 		else if(z==mCopy)
@@ -273,39 +260,4 @@ public class EditNewSearchWindow extends JDialog implements ActionListener,Windo
 		else if(z==bSetname)
 			setFileName();
 	}
-	/*Windows listenree*/
-	@Override
-	public void windowActivated(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void windowClosed(WindowEvent arg0) {
-		
-	}
-	@Override
-	public void windowClosing(WindowEvent arg0) {
-		textarea.setText("");
-		textfield.setText("");
-	}
-	@Override
-	public void windowDeactivated(WindowEvent arg0) {
-				
-	}
-	@Override
-	public void windowDeiconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void windowIconified(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void windowOpened(WindowEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

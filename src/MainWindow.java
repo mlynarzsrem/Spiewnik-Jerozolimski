@@ -80,7 +80,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		configureFileListPopupMenu();
 		confgureViewPopupMenu();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		ShowAllFiles();
+		showAllFiles();
 	}
 	public static void main(String[] args) {
 		MainWindow mainwindow= new MainWindow();
@@ -92,7 +92,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		ViewBoxSettings = new Settings();
 		fsSettings = new Settings();
 		globalSettings = new GlobalSettings();
-		ImportSettings();
+		importSettings();
 		File folder= new File(globalSettings.getPath());
 		if(!folder.exists()) //w przypadku nie poprawnych ustawien
 			globalSettings.setDefault();
@@ -195,6 +195,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		FileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		FileList.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		FileList.addMouseListener(this);
+		FileList.addKeyListener(this);
 		/*View of songs*/
 		taView = new JTextArea();
 		taView.setEditable(false);
@@ -216,7 +217,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		add(searchinside);
 	}
 	/*Wykonywane wiêcej razy*/
-	private void UserWantExit()
+	private void userWantExit()
 	{
 		int r=JOptionPane.showConfirmDialog(null, "Czy na pewno chcesz wyjœæ?", "Wyjœcie", JOptionPane.YES_NO_OPTION);
 		if(r==JOptionPane.YES_OPTION)
@@ -226,12 +227,12 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		}
 	}
 	/*Dotycz¹ce listy plików*/
-	private void UserSearch()
+	private void userSearch()
 	{
-		ClearTable();
+		clearTable();
 		String searched=tfSearch.getText().toLowerCase();
 		if(searched.isEmpty())//Je¿eli u¿ytkownik niczego nie szuka wyœwietl wszystkie			
-			ShowAllFiles();
+			showAllFiles();
 		else
 		{
 			File folder= new File(globalSettings.getPath());
@@ -246,19 +247,17 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 							TabModel.addRow(new Object[] {ListOfFiles[i].getName()});						
 						else if(searchinside.isSelected())
 						{
-							if(IsInFile(ListOfFiles[i],searched))
+							if(isInFile(ListOfFiles[i],searched))
 								TabModel.addRow(new Object[] {ListOfFiles[i].getName()});
 						}
 					}
 				}
 			}
-			else
-				globalSettings.setDefault();
 		}
 	}
-	private void ShowAllFiles()
+	private void showAllFiles()
 	{
-		ClearTable();
+		clearTable();
 		File folder= new File(globalSettings.getPath());
 		if(folder.exists()&&folder.isDirectory())
 		{
@@ -269,11 +268,9 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 				TabModel.addRow(new Object[] {ListOfFiles[i].getName()});
 			}
 		}
-		else
-			globalSettings.setDefault();
 		
 	}
-	private void ClearTable() //czysczenie listy plików
+	private void clearTable() //czysczenie listy plików
 	{
 		if (TabModel.getRowCount() > 0) {
 		    for (int i = TabModel.getRowCount() - 1; i > -1; i--) {
@@ -282,7 +279,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		}
 	}
 	/*Dotycz¹ce podgl¹du*/
-	private void ShowContentInViewBox() //wyœwitlanie piosenki w podgl¹dzie
+	private void showContentInViewBox() //wyœwitlanie piosenki w podgl¹dzie
 	{
 		taView.setText("");
 		int row_id=FileList.getSelectedRow();
@@ -348,7 +345,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		{
 			newfilewindow.openAnother(new File(globalSettings.getPath()));
 		}
-		UserSearch();
+		userSearch();
 	}
 	private void openEditingWindow(File editFile)
 	{
@@ -358,7 +355,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 				editwindow= new EditNewSearchWindow (this,editFile);
 			else
 				editwindow.openAnother(editFile);
-			UserSearch();
+			userSearch();
 		}
 	}
 	private void openSettingsWindow()
@@ -367,7 +364,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		settingsWindow = new MainSettingsWindow(this,this.globalSettings,this.fsSettings,this.ViewBoxSettings);
 		else settingsWindow.setVisible(true);
 		configureViewBox();
-		UserSearch();
+		userSearch();
 	}
 	/*Pomocnicze*/
 	/*Operacje na ustawieniach*/
@@ -380,7 +377,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 			e.printStackTrace();
 		}
 	}
-	private void ImportSettings()
+	private void importSettings()
 	{
 		File file = new File("settings.dat");
 		if(file.exists())
@@ -413,7 +410,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		}
 		return newFile;
 	}
-	private File OpenFile()
+	private File openFile()
 	{
 		JFileChooser fc= new JFileChooser();
 		fc.setDialogTitle("Otwórz plik");
@@ -449,7 +446,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 			configureViewBox();
 		}
 	}
-	private void IncrementFontSize(boolean up)
+	private void incrementFontSize(boolean up)
 	{
 		Font actFont=taView.getFont();
 		int fsize=actFont.getSize();
@@ -467,7 +464,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		configureViewBox();
 	}
 	/*Wyszukiwanie*/
-	private boolean IsInFile(File file,String s)
+	private boolean isInFile(File file,String s)
 	{
 		String AllText="";
 		if(file.exists())
@@ -496,13 +493,13 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 		Object src =e.getSource();
 		/*File menu*/
 		if(src==mfExit)
-			UserWantExit();
+			userWantExit();
 		if(src==mfNewFile)
 			openNewFileWindow();
 		if(src==mfEdit)
-			openEditingWindow(OpenFile());
+			openEditingWindow(openFile());
 		if(src==mfOpenFile)
-			openFullScreenView(OpenFile());
+			openFullScreenView(openFile());
 		/*Inforamation Menu*/
 		else if(src==miAboutProgram)
 			JOptionPane.showMessageDialog(null, AboutProgram, "O programie", JOptionPane.INFORMATION_MESSAGE);
@@ -517,7 +514,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 			openSettingsWindow();
 		/*Textfields*/
 		else if(src==tfSearch)
-			UserSearch();
+			userSearch();
 		/*Popupmenu*/
 		/*filelist popmenu*/
 		else if(src==pmNewFile)
@@ -528,22 +525,30 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 			openEditingWindow(getSelectedFile());
 		/*view box popmenu*/
 		else if(src==pvIncFontSize)
-			IncrementFontSize(true);
+			incrementFontSize(true);
 		else if(src==pvDecFontSize)
-			IncrementFontSize(false);
+			incrementFontSize(false);
 		else if(src==pvSetFontSize)
 			setNewFontSize();
 		/*checkbox*/
 		else if(src==searchinside)
-			UserSearch();
+			userSearch();
 	}
 	/*KeyListener*/
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 	}
 	@Override
-	public void keyReleased(KeyEvent arg0) {
-		UserSearch();
+	public void keyReleased(KeyEvent e) {
+		Object z =e.getSource();
+		if(z==tfSearch)
+		userSearch();
+		if(z==FileList)
+		{
+				showContentInViewBox();
+				if(e.getKeyCode()==KeyEvent.VK_SPACE)
+					openFullScreenView(getSelectedFile());
+		}
 		
 	}
 	@Override
@@ -561,7 +566,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 				if(e.getClickCount() == 2)
 					openFullScreenView(getSelectedFile());
 				else
-					ShowContentInViewBox();
+					showContentInViewBox();
 			}
 			else if(e.getButton()==MouseEvent.BUTTON3)
 				openPopupMaybe(e);
