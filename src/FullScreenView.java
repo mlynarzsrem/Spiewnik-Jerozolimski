@@ -114,8 +114,6 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 	{
 		filename=f;	
 		importText();
-		Dimension d =Toolkit.getDefaultToolkit().getScreenSize();
-		setSize(d.width,d.height);
 		setVisible(true);
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);	
 	}
@@ -154,8 +152,6 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 			IncrementFontSize(false);
 		if(e.getKeyCode()==KeyEvent.VK_SPACE||e.getKeyCode()==KeyEvent.VK_SHIFT)
 			textfield.setCaretPosition(0);
-		if(e.getKeyCode()==KeyEvent.VK_ENTER)
-			System.out.println(textfield.getCaretPosition());
 		
 	}
 	@Override

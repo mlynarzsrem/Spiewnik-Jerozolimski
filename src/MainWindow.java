@@ -58,6 +58,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	private JMenuItem pmNewFile,pmEditFile,pmOpenFile,pvIncFontSize,pvDecFontSize,pvSetFontSize;
 	/*Othes*/
 	private String AboutProgram="To jest œpiewnik Wspólnoty Jerozolima.\n Aplikacja zosta³a stworzona przez Jakuba M³ynarza.\n Wszelkie prawa zastrze¿one \n Wersja 1.0.1 ";
+	private int actText;// id otwartego utowru
 	/*Setings*/
 	private Settings ViewBoxSettings,fsSettings; 
 	private GlobalSettings globalSettings;
@@ -281,8 +282,11 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	/*Dotycz¹ce podgl¹du*/
 	private void showContentInViewBox() //wyœwitlanie piosenki w podgl¹dzie
 	{
-		taView.setText("");
 		int row_id=FileList.getSelectedRow();
+		if(row_id==actText)
+			return;
+		else actText=row_id;
+		taView.setText("");
 		String FileName=FileList.getModel().getValueAt(row_id, 0).toString();
 		String FileAbsolutePath=globalSettings.getPath()+"\\"+FileName;
 		//System.out.println(FileAbsolutePath);
@@ -585,6 +589,11 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
+		Object z = e.getSource();
+		if(z==FileList)
+		{
+			showContentInViewBox();
+		}
 
 		
 	}
