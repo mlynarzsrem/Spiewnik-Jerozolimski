@@ -25,7 +25,7 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 	private static final long serialVersionUID = -5381313303663242848L;
 	private JTextArea textfield;
 	private JPopupMenu popupmenu;
-	private JMenuItem mIncFontSize,mDecFontSize,mSetFontSize,mBegining;
+	private JMenuItem mIncFontSize,mDecFontSize,mSetFontSize,mBegining,mChangeDecoration;
 	private String filename;
 	private Settings settings;
 	public FullScreenView(JFrame owner,String f,Settings fs)
@@ -37,6 +37,7 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 		setSize(d.width,d.height);
 		setResizable(false);
 		configureTextfield();
+		setUndecorated(true);
 		configurePopupMenu();
 		settings=fs;
 		filename=f;
@@ -66,12 +67,15 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 		mSetFontSize.addActionListener(this);
 		mBegining= new JMenuItem("Wróæ na pocz¹tek");
 		mBegining.addActionListener(this);
+		mChangeDecoration= new JMenuItem("W³¹cz obramowanie");
+		mChangeDecoration.addActionListener(this);
 		
 		popupmenu = new JPopupMenu();
 		popupmenu.add(mIncFontSize);
 		popupmenu.add(mDecFontSize);
 		popupmenu.add(mSetFontSize);
 		popupmenu.add(mBegining);
+		popupmenu.add(mChangeDecoration);
 		
 		textfield.setComponentPopupMenu(popupmenu);
 	}
@@ -117,6 +121,16 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 		setVisible(true);
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);	
 	}
+	public void ChangeDecoration()
+	{
+		boolean isDecorated = this.isUndecorated();
+		dispose();
+		if(isDecorated==true)
+			mChangeDecoration.setText("Wy³¹cz obramowanie");
+		else mChangeDecoration.setText("W³¹cz obramowanie");
+		setUndecorated(!isDecorated);
+		setVisible(true);
+	}
 	private void importText()
 	{
 		textfield.setFont(settings.getBoldFont());
@@ -152,7 +166,8 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 			IncrementFontSize(false);
 		if(e.getKeyCode()==KeyEvent.VK_SPACE||e.getKeyCode()==KeyEvent.VK_SHIFT)
 			textfield.setCaretPosition(0);
-		
+		if(e.getKeyCode()==KeyEvent.VK_F11)
+			ChangeDecoration();
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {
@@ -187,6 +202,8 @@ public class FullScreenView extends JDialog implements KeyListener,MouseWheelLis
 			setNewFontSize();
 		else if(z==mBegining)
 			textfield.setCaretPosition(0);
+		else if(z==mChangeDecoration)
+			ChangeDecoration();
 	}
 
 }
