@@ -230,6 +230,7 @@ public class MainWindow extends JFrame implements ActionListener , MouseListener
 	/*Dotycz¹ce listy plików*/
 	private void userSearch()
 	{
+		actText=-1;
 		clearTable();
 		String searched=tfSearch.getText().toLowerCase();
 		if(searched.isEmpty())//Je¿eli u¿ytkownik niczego nie szuka wyœwietl wszystkie			
